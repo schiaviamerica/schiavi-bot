@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Schiavi America — Technical Support</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@300;400;500;600&family=Share+Tech+Mono&display=swap');
+
+  :root {
+    --red: #CC1F1F; --red-bright: #E82020; --red-dark: #8B1010;
+    --bg: #0A0A0B; --bg2: #111113; --bg3: #191A1C; --bg4: #222326;
+    --border: #2A2B2E; --border2: #333438;
+    --text: #E8E8E8; --text2: #A0A0A8; --text3: #5A5A62;
+    --green: #1ECC6A; --amber: #F5A623; --blue: #2D7DD2;
+    --mono: 'Share Tech Mono', monospace; --head: 'Barlow Condensed', sans-serif; --body: 'Barlow', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--body); height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+  .header { background: var(--bg2); border-bottom: 2px solid var(--red); padding: 0 16px; height: 54px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+  .logo-area { display: flex; align-items: center; gap: 12px; }
+  .logo-badge { background: var(--red); color: #fff; font-family: var(--head); font-weight: 900; font-size: 18px; letter-spacing: 1px; padding: 4px 12px 4px 10px; clip-path: polygon(0 0,100% 0,93% 100%,0 100%); }
+  .logo-title { font-family: var(--head); font-weight: 700; font-size: 16px; letter-spacing: 0.5px; }
+  .logo-sub { font-size: 10px; color: var(--text3); letter-spacing: 1px; text-transform: uppercase; }
+  .header-right { display: flex; align-items: center; gap: 10px; }
+  .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.4} }
+  .version-tag { font-family: var(--mono); font-size: 10px; color: var(--text3); background: var(--bg4); padding: 2px 6px; border: 1px solid var(--border); }
+  .dealer-tag { font-size: 10px; color: var(--text3); }
+
+  .mode-bar { background: var(--bg2); border-bottom: 1px solid var(--border); display: flex; padding: 0 12px; gap: 2px; flex-shrink: 0; }
+  .mode-tab { padding: 8px 18px; font-family: var(--head); font-weight: 700; font-size: 13px; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; border: none; background: transparent; color: var(--text3); border-bottom: 3px solid transparent; transition: all .15s; position: relative; top: 1px; }
+  .mode-tab:hover { color: var(--text2); }
+  .mode-tab.active { color: var(--red-bright); border-bottom-color: var(--red-bright); }
+
+  .main { flex: 1; display: flex; overflow: hidden; }
+  .sidebar { width: 245px; background: var(--bg2); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto; }
+  .sidebar::-webkit-scrollbar { width: 4px; } .sidebar::-webkit-scrollbar-thumb { background: var(--border2); }
+  .sidebar-section { padding: 10px 12px; border-bottom: 1px solid var(--border); }
+  .sidebar-label { font-family: var(--head); font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text3); margin-bottom: 6px; }
+  .kb-item { display: flex; align-items: flex-start; gap: 6px; padding: 3px 4px; font-size: 10.5px; color: var(--text2); margin-bottom: 1px; }
+  .kb-dot { width: 5px; height: 5px; border-radius: 50%; background: var(--green); margin-top: 4px; flex-shrink: 0; } .kb-dot.amber { background: var(--amber); }
+  .quick-btn { display: block; width: 100%; text-align: left; padding: 6px 8px; background: var(--bg4); border: 1px solid var(--border); color: var(--text2); font-family: var(--body); font-size: 11px; cursor: pointer; margin-bottom: 4px; border-radius: 2px; transition: all .15s; }
+  .quick-btn:hover { background: var(--bg3); border-color: var(--red); color: var(--text); }
+  .quick-btn .qb-cat { font-family: var(--mono); font-size: 9px; color: var(--text3); display: block; margin-bottom: 2px; }
+  .calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+  .calc-btn { padding: 7px; background: var(--bg4); border: 1px solid var(--border); color: var(--text2); font-size: 11px; cursor: pointer; border-radius: 2px; transition: all .15s; text-align: left; font-family: var(--body); }
+  .calc-btn:hover { border-color: var(--blue); color: var(--text); }
+  .calc-btn .calc-name { font-weight: 600; display: block; } .calc-btn .calc-desc { color: var(--text3); font-size: 9px; display: block; margin-top: 2px; }
+  .ref-grid { display: grid; gap: 4px; }
+  .ref-btn { padding: 5px 7px; background: var(--bg4); border: 1px solid var(--border); color: var(--text2); font-size: 11px; cursor: pointer; border-radius: 2px; transition: all .15s; text-align: left; font-family: var(--body); display: flex; align-items: center; gap: 6px; }
+  .ref-btn:hover { border-color: var(--blue); color: var(--text); }
+  .ref-code { font-family: var(--mono); font-size: 9px; color: var(--blue); background: var(--bg2); padding: 1px 4px; border: 1px solid var(--border); flex-shrink: 0; }
+  .machine-info { font-size: 11px; color: var(--text2); line-height: 1.7; }
+  .machine-info .mi-label { color: var(--text3); }
+  .machine-info .mi-note { margin-top: 6px; padding-top: 6px; border-top: 1px solid var(--border); color: var(--text3); font-size: 10px; line-height: 1.5; }
+
+  .chat-container { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--bg); position: relative; }
+  .drag-overlay { position: absolute; inset: 0; background: rgba(10,10,11,.88); border: 2px dashed var(--red); display: none; align-items: center; justify-content: center; z-index: 100; font-family: var(--head); font-size: 24px; font-weight: 700; color: var(--red); letter-spacing: 3px; }
+  .chat-container.dragging .drag-overlay { display: flex; }
+  .upload-bar { background: var(--bg3); border-bottom: 1px solid var(--border); padding: 6px 12px; display: flex; align-items: center; gap: 8px; flex-shrink: 0; flex-wrap: wrap; }
+  .upload-label { font-size: 11px; color: var(--text3); font-family: var(--mono); }
+  .upload-btn { padding: 4px 10px; background: var(--bg4); border: 1px solid var(--border2); color: var(--text2); font-size: 11px; cursor: pointer; border-radius: 2px; font-family: var(--body); }
+  .upload-btn:hover { border-color: var(--red); color: var(--text); }
+  #file-input { display: none; }
+  .file-chips { display: flex; gap: 5px; flex-wrap: wrap; }
+  .file-chip { background: var(--bg4); border: 1px solid var(--border2); padding: 2px 8px; font-size: 10px; font-family: var(--mono); color: var(--blue); border-radius: 2px; display: flex; align-items: center; gap: 5px; }
+  .chip-x { cursor: pointer; color: var(--text3); } .chip-x:hover { color: var(--red); }
+
+  .messages { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 14px; }
+  .messages::-webkit-scrollbar { width: 5px; } .messages::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+  .msg { display: flex; gap: 10px; max-width: 92%; }
+  .msg.user { align-self: flex-end; flex-direction: row-reverse; } .msg.bot { align-self: flex-start; }
+  .msg-avatar { width: 30px; height: 30px; border-radius: 2px; display: flex; align-items: center; justify-content: center; font-family: var(--head); font-weight: 900; font-size: 13px; flex-shrink: 0; }
+  .msg.bot .msg-avatar { background: var(--red); color: #fff; }
+  .msg.user .msg-avatar { background: var(--bg4); color: var(--text2); border: 1px solid var(--border2); }
+  .msg-bubble { padding: 10px 14px; border-radius: 2px; font-size: 13px; line-height: 1.6; }
+  .msg.bot .msg-bubble { background: var(--bg3); border: 1px solid var(--border); border-left: 3px solid var(--red); color: var(--text); }
+  .msg.user .msg-bubble { background: var(--bg4); border: 1px solid var(--border2); color: var(--text); }
+  .msg-bubble strong { color: var(--red-bright); } .msg-bubble em { color: var(--amber); font-style: normal; }
+  .msg-bubble code { font-family: var(--mono); background: var(--bg2); padding: 1px 5px; font-size: 11px; color: var(--amber); border: 1px solid var(--border); }
+  .msg-bubble pre { background: var(--bg2); border: 1px solid var(--border); padding: 8px; font-family: var(--mono); font-size: 11px; color: var(--amber); overflow-x: auto; margin: 6px 0; border-left: 3px solid var(--amber); }
+  .msg-bubble ul, .msg-bubble ol { padding-left: 18px; margin: 4px 0; } .msg-bubble li { margin-bottom: 3px; }
+  .msg-bubble h3 { font-family: var(--head); font-weight: 700; font-size: 14px; color: var(--red-bright); margin: 8px 0 4px; letter-spacing: .5px; }
+  .msg-bubble h4 { font-family: var(--head); font-weight: 600; font-size: 13px; color: var(--amber); margin: 8px 0 3px; }
+  .msg-bubble p { margin-bottom: 5px; } .msg-bubble p:last-child { margin-bottom: 0; }
+  .msg-bubble hr { border: none; border-top: 1px solid var(--border); margin: 8px 0; }
+  .escalation-box { background: rgba(204,31,31,.10); border: 1px solid var(--red); border-left: 4px solid var(--red-bright); padding: 10px 14px; margin-top: 8px; border-radius: 2px; }
+  .escalation-box .esc-title { font-family: var(--head); font-weight: 700; font-size: 13px; color: var(--red-bright); letter-spacing: 1px; margin-bottom: 6px; }
+  .escalation-box .esc-row { font-size: 12px; color: var(--text2); margin-bottom: 3px; } .escalation-box .esc-row span { color: var(--text); font-weight: 600; }
+  .escalation-box .esc-warn { margin-top: 6px; font-size: 11px; color: var(--amber); }
+  .msg-image { max-width: 200px; max-height: 150px; border: 1px solid var(--border); border-radius: 2px; margin-top: 6px; display: block; }
+  .msg-doc { font-family: var(--mono); font-size: 10px; color: var(--blue); margin-top: 6px; }
+  .typing-indicator { display: flex; align-items: center; gap: 5px; padding: 10px 14px; background: var(--bg3); border: 1px solid var(--border); border-left: 3px solid var(--red); border-radius: 2px; width: fit-content; }
+  .typing-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--red); animation: tdot 1.2s infinite; }
+  .typing-dot:nth-child(2){animation-delay:.2s} .typing-dot:nth-child(3){animation-delay:.4s}
+  @keyframes tdot { 0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)} }
+  .sys-msg { text-align: center; font-family: var(--mono); font-size: 10px; color: var(--text3); padding: 2px 0; }
+  .sys-line { display: flex; align-items: center; gap: 8px; justify-content: center; }
+  .sys-line::before,.sys-line::after { content:''; flex:1; max-width:80px; height:1px; background:var(--border); }
+  .input-area { background: var(--bg2); border-top: 1px solid var(--border); padding: 10px 12px; flex-shrink: 0; }
+  .input-row { display: flex; gap: 8px; align-items: flex-end; }
+  .chat-textarea { flex: 1; background: var(--bg4); border: 1px solid var(--border2); color: var(--text); font-family: var(--body); font-size: 13px; padding: 9px 12px; resize: none; min-height: 42px; max-height: 120px; border-radius: 2px; outline: none; transition: border-color .15s; line-height: 1.5; }
+  .chat-textarea:focus { border-color: var(--red); } .chat-textarea::placeholder { color: var(--text3); }
+  .send-btn { background: var(--red); border: none; color: #fff; font-family: var(--head); font-weight: 700; font-size: 13px; letter-spacing: 1px; padding: 9px 18px; cursor: pointer; border-radius: 2px; transition: background .15s; height: 42px; white-space: nowrap; }
+  .send-btn:hover { background: var(--red-bright); } .send-btn:disabled { background: var(--bg4); color: var(--text3); cursor: not-allowed; }
+  .input-hint { font-size: 10px; color: var(--text3); margin-top: 4px; font-family: var(--mono); }
+
+  @media (max-width: 760px) { .sidebar { display: none; } .msg { max-width: 98%; } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo-area">
+    <div class="logo-badge">SCHIAVI</div>
+    <div>
+      <div class="logo-title">Technical Support Center</div>
+      <div class="logo-sub">Schiavi America — Press Brake Diagnostics</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <div class="status-dot"></div>
+    <div class="version-tag">web</div>
+    <div class="dealer-tag">Schiavi America</div>
+  </div>
+</div>
+
+<div class="mode-bar">
+  <button class="mode-tab active" onclick="setMode('diagnose')" id="tab-diagnose">⚡ DIAGNOSE</button>
+  <button class="mode-tab" onclick="setMode('calculator')" id="tab-calculator">⚙ CALCULATOR</button>
+  <button class="mode-tab" onclick="setMode('reference')" id="tab-reference">📋 REFERENCE</button>
+</div>
+
+<div class="main">
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">Verified Knowledge</div>
+      <div class="kb-item"><div class="kb-dot"></div>Tooling clamp — Q8 / wire 2007 PRESSIONE OK</div>
+      <div class="kb-item"><div class="kb-dot"></div>Manifold RA73522806 — valves 3.1/3.2, 5.x/6.x</div>
+      <div class="kb-item"><div class="kb-dot"></div>50T param baseline — CNC v7.86</div>
+      <div class="kb-item"><div class="kb-dot"></div>Bending calculations (air bend)</div>
+      <div class="kb-item"><div class="kb-dot amber"></div>DSP/MCS codes — upload screen to read</div>
+      <div class="kb-item"><div class="kb-dot amber"></div>Other docs — attach the PDF when needed</div>
+    </div>
+    <div class="sidebar-section" id="sidebar-dynamic"></div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Contact</div>
+      <div class="machine-info">
+        <div><span class="mi-label">Schiavi America</span></div>
+        <div>6130 Shiloh Road, Alpharetta, GA 30005</div>
+        <div><span class="mi-label">Phone: </span>943-230-2205</div>
+        <div>sales@schiaviamerica.com</div>
+        <div>service@schiaviamerica.com</div>
+        <div class="mi-note">For emergency service, parts, or escalated faults — contact Schiavi America directly.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="chat-container" id="chat-container">
+    <div class="drag-overlay" id="drag-overlay">📎 DROP FILE TO ATTACH</div>
+    <div class="upload-bar">
+      <div class="upload-label">ATTACH:</div>
+      <button class="upload-btn" onclick="document.getElementById('file-input').click()">+ Photo / Schematic / PDF</button>
+      <input type="file" id="file-input" accept="image/*,.pdf" multiple onchange="handleFileSelect(event)">
+      <div class="file-chips" id="file-chips"></div>
+    </div>
+
+    <div class="messages" id="messages">
+      <div class="sys-msg"><div class="sys-line">SESSION START — SCHIAVI SUPPORT</div></div>
+      <div class="msg bot">
+        <div class="msg-avatar">S</div>
+        <div class="msg-bubble">
+          <h3>⚡ Schiavi America Technical Support</h3>
+          <p>Press brake diagnostics for Athena CNC, Rexroth SVP hybrid & hydraulic systems, DSP Laser/MCS and other safety devices, back gauge, and tooling clamp.</p>
+          <p>Pick a mode above — <strong>Diagnose</strong>, <strong>Calculator</strong>, or <strong>Reference</strong> — and attach a photo of the error screen or the relevant schematic page anytime. I read uploaded images and PDFs directly.</p>
+          <p>What are we troubleshooting?</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-area">
+      <div class="input-row">
+        <textarea class="chat-textarea" id="chat-input" placeholder="Describe the fault, error code, or question..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+        <button class="send-btn" id="send-btn" onclick="sendMessage()">SEND ▶</button>
+      </div>
+      <div class="input-hint">ENTER to send · SHIFT+ENTER for new line · Drag &amp; drop files to attach</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// The frontend NEVER holds the API key. It talks only to our own backend.
+const API_ENDPOINT = '/api/chat';
+
+let currentMode = 'diagnose';
+let attachedFiles = [];
+let conversationHistory = [];
+let isLoading = false;
+
+document.addEventListener('DOMContentLoaded', () => { setMode('diagnose'); setupDragDrop(); });
+
+function setMode(mode) {
+  currentMode = mode;
+  document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + mode).classList.add('active');
+  const sb = document.getElementById('sidebar-dynamic');
+  if (mode === 'diagnose') {
+    sb.innerHTML = `
+      <div class="sidebar-label">Quick Diagnose</div>
+      <button class="quick-btn" onclick="quickAsk('Machine will not cycle — beam will not descend, no clear error on the Athena screen. Walk me through diagnosis starting with safety interlocks and the tooling clamp PRESSIONE OK signal.')"><span class="qb-cat">CYCLE FAULT</span>Beam won't descend — no error</button>
+      <button class="quick-btn" onclick="quickAsk('There is an alarm on the MCS controller for the DSP Laser AP safety system. How do I approach this? I can upload a photo of the display.')"><span class="qb-cat">SAFETY</span>DSP Laser / MCS alarm</button>
+      <button class="quick-btn" onclick="quickAsk('Hydraulic pressure fault — machine stops mid-bend. Give me a diagnostic tree, considering the Rexroth manifold valves.')"><span class="qb-cat">HYDRAULIC</span>Pressure fault / mid-bend stop</button>
+      <button class="quick-btn" onclick="quickAsk('PRESSIONE OK signal on wire 2007 (Q8 on the LOGO! PLC) appears to be missing and the machine will not cycle. How do I diagnose the tooling clamp system?')"><span class="qb-cat">TOOLING CLAMP</span>PRESSIONE OK missing (wire 2007)</button>
+      <button class="quick-btn" onclick="quickAsk('Back gauge axis is not reaching its target position on the Athena CNC. Diagnosis steps.')"><span class="qb-cat">BACK GAUGE</span>Axis position error</button>
+      <button class="quick-btn" onclick="quickAsk('The beam descends unevenly (one side leads the other). Which manifold valves and parameters should I check?')"><span class="qb-cat">HYDRAULIC</span>Asymmetric descent (Y1/Y2)</button>`;
+  } else if (mode === 'calculator') {
+    sb.innerHTML = `
+      <div class="sidebar-label">Calculators</div>
+      <div class="calc-grid">
+        <button class="calc-btn" onclick="quickAsk('Calculate air-bend tonnage: mild steel Rm=400MPa, bend length=1500mm, thickness=4mm, V-die=32mm. Show the full formula and result in US tons.')"><span class="calc-name">Tonnage</span><span class="calc-desc">Required force</span></button>
+        <button class="calc-btn" onclick="quickAsk('Recommend a V-die opening and minimum inside bend radius for 3mm 316L stainless.')"><span class="calc-name">V-Die Size</span><span class="calc-desc">Die selection</span></button>
+        <button class="calc-btn" onclick="quickAsk('Estimate springback for a 90 degree air bend in 2mm 304 stainless. How much should I overbend?')"><span class="calc-name">Springback</span><span class="calc-desc">Angle correction</span></button>
+        <button class="calc-btn" onclick="quickAsk('Calculate developed flat length: 90 degree bend, 3mm mild steel, 5mm inside radius, leg A=500mm, leg B=300mm.')"><span class="calc-name">Blank Length</span><span class="calc-desc">Flat pattern</span></button>
+        <button class="calc-btn" onclick="quickAsk('For a 50-ton machine, what bend length of 6mm mild steel can I form, and what die opening does it need?')"><span class="calc-name">Capacity</span><span class="calc-desc">50T check</span></button>
+        <button class="calc-btn" onclick="quickAsk('Compare forming 4mm mild steel vs 4mm stainless: tonnage, die selection, and springback differences.')"><span class="calc-name">Compare</span><span class="calc-desc">MS vs SS</span></button>
+      </div>
+      <div style="margin-top:8px;font-size:10px;color:var(--text3);font-family:var(--mono);">Or describe your specific job.</div>`;
+  } else {
+    sb.innerHTML = `
+      <div class="sidebar-label">Reference</div>
+      <div class="ref-grid">
+        <button class="ref-btn" onclick="quickAsk('Explain the tooling clamp LOGO! PLC system and the role of the Q8 / wire 2007 PRESSIONE OK signal to CRC3.')"><span class="ref-code">PLC</span>Clamp PRESSIONE OK signal</button>
+        <button class="ref-btn" onclick="quickAsk('Describe the Rexroth manifold RA73522806: main proportional valves 3.1/3.2 and counterbalance valves, and their role in Y-axis control.')"><span class="ref-code">HYD</span>Manifold RA73522806 valves</button>
+        <button class="ref-btn" onclick="quickAsk('What is the air-bend tonnage formula and the typical die-opening and springback rules of thumb?')"><span class="ref-code">CALC</span>Bending rules of thumb</button>
+        <button class="ref-btn" onclick="quickAsk('What safety systems are used on Schiavi machines and how should I approach a safety alarm? I can upload the controller display.')"><span class="ref-code">SAFE</span>Safety systems overview</button>
+        <button class="ref-btn" onclick="quickAsk('I have a schematic page / parameter screen I need interpreted. What should I upload and how will you use it?')"><span class="ref-code">DOCS</span>How to use uploads</button>
+      </div>`;
+  }
+  addSysMsg('MODE: ' + mode.toUpperCase());
+}
+
+function addSysMsg(text) {
+  const m = document.getElementById('messages');
+  const d = document.createElement('div'); d.className = 'sys-msg';
+  d.innerHTML = `<div class="sys-line">${text}</div>`; m.appendChild(d); scrollMsgs();
+}
+
+function renderMarkdown(text) {
+  // Escalation block first. Tolerant of ] inside the reason.
+  text = text.replace(/\[ESCALATE:\s*([\s\S]*?)\]\s*$/m, (_, reason) => `
+    <div class="escalation-box">
+      <div class="esc-title">🔴 ESCALATION RECOMMENDED</div>
+      <div class="esc-row"><span>Issue:</span> ${reason.trim()}</div>
+      <div class="esc-row"><span>Schiavi America:</span> 943-230-2205 · service@schiaviamerica.com</div>
+      <div class="esc-row"><span>Schiavi Service (Italy):</span> +39 035 4242432 · service@schiavimacchine.it</div>
+      <div class="esc-warn">⚠ Provide machine serial, Athena CNC version, and a fault description when contacting support. Do not operate the machine until a qualified person clears the fault.</div>
+    </div>`);
+  text = text.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  text = text.replace(/^#### (.+)$/gm, '<h4>$1</h4>');
+  text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  text = text.replace(/```[\w]*\n([\s\S]*?)```/g, '<pre>$1</pre>');
+  text = text.replace(/`([^`\n]+)`/g, '<code>$1</code>');
+  text = text.replace(/^---+$/gm, '<hr>');
+  text = text.replace(/^(\d+)\. (.+)$/gm, '<li>$2</li>');
+  text = text.replace(/^[•\-\*] (.+)$/gm, '<li>$1</li>');
+  text = text.replace(/(<li>[\s\S]*?<\/li>\n?)+/g, m => `<ul>${m}</ul>`);
+  text = text.replace(/\n\n+/g, '</p><p>');
+  text = text.replace(/\n/g, '<br>');
+  if (!text.startsWith('<')) text = '<p>' + text + '</p>';
+  return text;
+}
+
+function addMessage(role, content, attachMeta) {
+  const msgs = document.getElementById('messages');
+  const wrap = document.createElement('div'); wrap.className = `msg ${role}`;
+  const av = document.createElement('div'); av.className = 'msg-avatar'; av.textContent = role === 'bot' ? 'S' : 'U';
+  const bub = document.createElement('div'); bub.className = 'msg-bubble';
+  if (role === 'bot') { bub.innerHTML = renderMarkdown(content); }
+  else {
+    bub.textContent = content;
+    (attachMeta || []).forEach(a => {
+      if (a.kind === 'image') { const img = document.createElement('img'); img.src = a.url; img.className = 'msg-image'; bub.appendChild(img); }
+      else { const d = document.createElement('div'); d.className = 'msg-doc'; d.textContent = '📄 ' + a.name; bub.appendChild(d); }
+    });
+  }
+  wrap.appendChild(av); wrap.appendChild(bub); msgs.appendChild(wrap); scrollMsgs();
+}
+
+function showTyping() {
+  const m = document.getElementById('messages');
+  const d = document.createElement('div'); d.className = 'msg bot'; d.id = 'typing-indicator';
+  d.innerHTML = `<div class="msg-avatar">S</div><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
+  m.appendChild(d); scrollMsgs();
+}
+function removeTyping() { const t = document.getElementById('typing-indicator'); if (t) t.remove(); }
+function scrollMsgs() { const m = document.getElementById('messages'); m.scrollTop = m.scrollHeight; }
+
+// ---- FILE HANDLING (images AND PDFs both reach the model now) ----
+function handleFileSelect(e) { Array.from(e.target.files).forEach(addFile); e.target.value = ''; }
+function addFile(file) {
+  const isImage = file.type.startsWith('image/');
+  const isPdf = file.type === 'application/pdf' || /\.pdf$/i.test(file.name);
+  if (!isImage && !isPdf) { alert('Only images and PDFs are supported.'); return; }
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    const dataUrl = ev.target.result;
+    attachedFiles.push({ name: file.name, mediaType: isImage ? file.type : 'application/pdf', kind: isImage ? 'image' : 'pdf', dataUrl, b64: dataUrl.split(',')[1] });
+    renderChips();
+  };
+  reader.readAsDataURL(file);
+}
+function removeFile(i) { attachedFiles.splice(i, 1); renderChips(); }
+function renderChips() {
+  const c = document.getElementById('file-chips'); c.innerHTML = '';
+  attachedFiles.forEach((f, i) => {
+    const chip = document.createElement('div'); chip.className = 'file-chip';
+    const n = f.name.length > 22 ? f.name.substring(0, 20) + '…' : f.name;
+    const icon = f.kind === 'image' ? '🖼' : '📄';
+    chip.innerHTML = `${icon} ${n} <span class="chip-x" onclick="removeFile(${i})">✕</span>`;
+    c.appendChild(chip);
+  });
+}
+function setupDragDrop() {
+  const cc = document.getElementById('chat-container');
+  cc.addEventListener('dragover', e => { e.preventDefault(); cc.classList.add('dragging'); });
+  cc.addEventListener('dragleave', () => cc.classList.remove('dragging'));
+  cc.addEventListener('drop', e => { e.preventDefault(); cc.classList.remove('dragging'); Array.from(e.dataTransfer.files).forEach(addFile); });
+}
+
+// ---- SEND ----
+async function sendMessage() {
+  if (isLoading) return;
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text && attachedFiles.length === 0) return;
+
+  isLoading = true; document.getElementById('send-btn').disabled = true;
+
+  const attachMeta = attachedFiles.map(f => ({ kind: f.kind, name: f.name, url: f.dataUrl }));
+  addMessage('user', text || '[attached file for analysis]', attachMeta);
+
+  const userContent = [];
+  attachedFiles.forEach(f => {
+    if (f.kind === 'image') {
+      userContent.push({ type: 'image', source: { type: 'base64', media_type: f.mediaType, data: f.b64 } });
+    } else { // PDF — proper document block (this was silently dropped before)
+      userContent.push({ type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: f.b64 } });
+    }
+  });
+  const prefix = currentMode === 'diagnose' ? '[DIAGNOSE MODE] ' : currentMode === 'calculator' ? '[CALCULATOR MODE] ' : '[REFERENCE MODE] ';
+  userContent.push({ type: 'text', text: prefix + (text || 'Please analyze the attached file in the context of Schiavi press brake troubleshooting: identify the screen/schematic, any fault or error code, and the relevant technical detail.') });
+
+  conversationHistory.push({ role: 'user', content: userContent });
+  input.value = ''; input.style.height = '42px'; attachedFiles = []; renderChips();
+  showTyping();
+
+  try {
+    const resp = await fetch(API_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: conversationHistory })
+    });
+    const data = await resp.json();
+    removeTyping();
+    if (resp.ok && data.reply) {
+      addMessage('bot', data.reply);
+      conversationHistory.push({ role: 'assistant', content: data.reply });
+    } else {
+      addMessage('bot', `**Error:** ${data?.error?.message || 'No response received.'}`);
+    }
+  } catch (err) {
+    removeTyping();
+    addMessage('bot', `**Connection error:** ${err.message}`);
+  }
+  isLoading = false; document.getElementById('send-btn').disabled = false;
+}
+
+function quickAsk(t) { document.getElementById('chat-input').value = t; sendMessage(); }
+function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
+function autoResize(el) { el.style.height = '42px'; el.style.height = Math.min(el.scrollHeight, 120) + 'px'; }
+</script>
+</body>
+</html>
